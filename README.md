@@ -41,52 +41,45 @@ plt.show()
 ```
 # Delta Modulation
 ```sci
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.signal import butter, filtfilt
+import numpy as np, matplotlib.pyplot as plt
+from scipy.signal import butter,filtfilt
 
-fs, f, T, d = 10000, 10, 1, 0.1
+fs,f,T,d=10000,10,1,0.1
+t=np.arange(0,T,1/fs)
+m=np.sin(2*np.pi*f*t)
 
-t = np.arange(0, T, 1/fs)
-m = np.sin(2*np.pi*f*t)
-
-e, dm, p = [], [0], 0
+e=[];dm=[0];p=0
 
 for s in m:
-    b = 1 if s > p else 0
+    b=s>p
     e.append(b)
-    p += d if b else -d
+    p+=d if b else -d
     dm.append(p)
 
-x = [0]
+x=[0]
 for b in e:
-    x.append(x[-1] + d if b else x[-1] - d)
+    x.append(x[-1]+d if b else x[-1]-d)
 
-b, a = butter(4, 20/(0.5*fs), 'low')
-y = filtfilt(b, a, x)
+b,a=butter(4,20/(0.5*fs),'low')
+y=lfilter(b,a,x)
 
-titles = ['Original Signal',
-          'Delta Modulated Signal',
-          'Demodulated & Filtered Signal']
+ttl=['Original Signal',
+     'Delta Modulated Signal',
+     'Demodulated & Filtered Signal']
 
-signals = [m, dm[:-1], y[:-1]]
+sig=[m,dm[:-1],y[:-1]]
 
 plt.figure(figsize=(12,6))
 
 for i in range(3):
     plt.subplot(3,1,i+1)
-    
-    if i == 1:
-        plt.step(t, signals[i], where='mid')
-    else:
-        plt.plot(t, signals[i],
-                 linestyle='dotted' if i==2 else '-')
-    
-    plt.legend([titles[i]])
+    plt.step(t,sig[i],where='mid') if i==1 else plt.plot(t,sig[i],linestyle='dotted' if i==2 else '-')
+    plt.legend([ttl[i]])
     plt.grid()
 
 plt.tight_layout()
 plt.show()
+
 
 ```
 # Output Waveform
