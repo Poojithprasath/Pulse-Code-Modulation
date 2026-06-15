@@ -7,45 +7,37 @@ Google Collab
 # Pulse Code Modulation
 ```sci
 #PCM
-import numpy as np
-import matplotlib.pyplot as plt
+import numpy as np, matplotlib.pyplot as plt
 
-fs, f, d, q = 5000, 50, 0.1, 16
+fs,f,d,q=5000,50,0.1,16
+t=np.linspace(0,d,int(fs*d),0)
+m=np.sin(2*np.pi*f*t)
+c=np.sign(np.sin(2*np.pi*200*t))
 
-t = np.linspace(0, d, int(fs*d), endpoint=False)
-m = np.sin(2*np.pi*f*t)
-c = np.sign(np.sin(2*np.pi*200*t))
+s=(m.max()-m.min())/q
+qm=np.round(m/s)*s
 
-step = (m.max()-m.min())/q
-qm = np.round(m/step)*step
-pcm = ((qm-qm.min())/step).astype(int)
+ttl=["Message Signal (Analog)",
+     "Clock Signal (Increased Frequency)",
+     "PCM Modulated Signal (Quantized)",
+     "PCM Demodulation Signal"]
 
-titles = ["Message Signal (Analog)",
-          "Clock Signal (Increased Frequency)",
-          "PCM Modulated Signal (Quantized)",
-          "PCM Demodulation Signal"]
-
-signals = [m, c, qm, qm]
-colors = ['b', 'g', 'r', 'purple']
+sig=[m,c,qm,qm]
 
 plt.figure(figsize=(12,10))
 
 for i in range(4):
     plt.subplot(4,1,i+1)
-    
-    if i == 2:
-        plt.step(t, signals[i], color=colors[i])
-    else:
-        plt.plot(t, signals[i], color=colors[i],
-                 linestyle='--' if i==3 else '-')
-    
-    plt.title(titles[i])
+    plt.step(t,sig[i]) if i==2 else plt.plot(t,sig[i],linestyle='--'if i==3 else '-')
+    plt.title(ttl[i])
     plt.xlabel("Time [s]")
     plt.ylabel("Amplitude")
     plt.grid()
 
 plt.tight_layout()
 plt.show()
+
+
 ```
 # Delta Modulation
 ```sci
